@@ -1,0 +1,10 @@
+mat-card,
+.errormessage {
+  margin: auto;
+  width: 60%;
+}
+
+mat-form-field,
+input {
+  width: 100%;
+}

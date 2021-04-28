@@ -1,0 +1,47 @@
+<div class="alert alert-danger errormessage" *ngIf="error">
+  {{ error }}
+</div>
+<mat-card>
+  <form (ngSubmit)="onLogin()" #f="ngForm">
+    <mat-form-field>
+      <input
+        matInput
+        type="email"
+        name="email"
+        placeholder="Email"
+        ngModel
+        required
+        minlength="3"
+        #email="ngModel"
+      />
+      <mat-error *ngIf="email.invalid"
+        ><p>Please Enter the email!</p>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        matInput
+        type="password"
+        name="password"
+        placeholder="Password"
+        ngModel
+        required
+        minlength="3"
+        #password="ngModel"
+      />
+      <mat-error *ngIf="password.invalid"
+        ><p>Please Enter the password!</p>
+      </mat-error>
+    </mat-form-field>
+
+    <button
+      mat-raised-button
+      color="accent"
+      type="submit"
+      [disabled]="f.invalid"
+    >
+      Login
+    </button>
+  </form>
+</mat-card>
