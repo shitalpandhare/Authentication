@@ -8,39 +8,19 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatCardModule } from '@angular/material/card';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatRadioModule } from '@angular/material/radio';
-import { SignupComponent } from './auth/signup/signup.component';
-import { LoginComponent } from './auth/login/login.component';
+
 import { AuthInterceptor } from './auth/auth-interceptor';
-import { PostCreateComponent } from './posts/post-create/post-create.component';
-import { PostListComponent } from './posts/post-list/post-list.component';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { AngularMaterialModule } from './angular-material.module';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HeaderComponent,
-    SignupComponent,
-    LoginComponent,
-    PostCreateComponent,
-    PostListComponent,
-  ],
+  declarations: [AppComponent, HeaderComponent],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
     NoopAnimationsModule,
-    MatToolbarModule,
-    MatCardModule,
-    MatInputModule,
-    MatButtonModule,
-    MatRadioModule,
-    MatExpansionModule,
+    AngularMaterialModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

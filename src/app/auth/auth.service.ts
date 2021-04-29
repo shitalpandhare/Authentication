@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { User } from './user.model';
 
 export interface AuthResponse {
@@ -24,11 +25,12 @@ export interface AuthResponse {
 export class AuthService {
   private accessToken: string;
   private userRole: string;
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   getAccessToken() {
     return this.accessToken;
   }
+
   getUserRole() {
     return this.userRole;
   }
@@ -43,6 +45,7 @@ export class AuthService {
       .post<AuthResponse>('http://localhost:3000/api/user/signup', obj)
       .subscribe(
         (res) => {
+          this.router.navigate(['/auth/login']);
           console.log(res);
         },
         (error) => {
@@ -63,15 +66,25 @@ export class AuthService {
       })
       .subscribe(
         (res) => {
+          console.log(res);
           this.accessToken = res.data.accessToken;
-          this.userRole = res.data.role;
-          const expiresIn = res.data.expiresIn;
+          if (this.accessToken) {
+            this.userRole = res.data.role;
+            const expiresIn = res.data.expiresIn;
+            const currDate = new Date();
+            const expirationDate = new Date(
+              currDate.getTime() + expiresIn * 1000
+            );
+            this.saveAuthData(this.accessToken, expirationDate);
 
-          const currDate = new Date();
-          const expirationDate = new Date(
-            currDate.getTime() + expiresIn * 1000
-          );
-          this.saveAuthData(this.accessToken, expirationDate);
+            if (this.userRole == 'super') {
+              this.router.navigate(['/super']);
+            } else if (this.userRole == 'admin') {
+              this.router.navigate(['/admin']);
+            } else if (this.userRole == 'user') {
+              this.router.navigate(['/user']);
+            }
+          }
         },
         (error) => {
           console.log(error);
