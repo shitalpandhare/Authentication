@@ -1,0 +1,130 @@
+<mat-card>
+  <form (ngSubmit)="onSignup()" #f="ngForm">
+    <mat-form-field>
+      <input
+        matInput
+        type="text"
+        name="firstname"
+        placeholder="First Name"
+        ngModel
+        required
+        minlength="3"
+        #firstname="ngModel"
+      />
+      <mat-error *ngIf="firstname.invalid"
+        ><p>Please Enter the first name!</p>
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input
+        matInput
+        type="text"
+        name="lastname"
+        placeholder="Last Name"
+        ngModel
+        required
+        minlength="3"
+        #lastname="ngModel"
+      />
+      <mat-error *ngIf="lastname.invalid"
+        ><p>Please Enter the last name!</p>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        matInput
+        type="email"
+        name="email"
+        placeholder="Email"
+        ngModel
+        required
+        minlength="3"
+        #email="ngModel"
+      />
+      <mat-error *ngIf="email.invalid"
+        ><p>Please Enter the email!</p>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        matInput
+        type="text"
+        name="address"
+        placeholder="Address"
+        ngModel
+        required
+        minlength="3"
+        #address="ngModel"
+      />
+      <mat-error *ngIf="address.invalid"
+        ><p>Please Enter the address!</p>
+      </mat-error>
+    </mat-form-field>
+
+    <label id="user-role">Role</label>
+    <mat-radio-group
+      aria-labelledby="user-role"
+      class="radio-group"
+      name="role"
+      required
+      ngModel
+      #role="ngModel"
+    >
+      <mat-radio-button class="radio-button" value="super">
+        Super</mat-radio-button
+      >
+      <mat-radio-button class="radio-button" value="admin">
+        Admin</mat-radio-button
+      >
+      <mat-radio-button class="radio-button" value="user">
+        User</mat-radio-button
+      >
+    </mat-radio-group>
+
+    <label id="gender">Gender</label>
+    <mat-radio-group
+      aria-labelledby="gender"
+      class="radio-group"
+      name="gender"
+      required
+      ngModel
+      #gender="ngModel"
+    >
+      <mat-radio-button class="radio-button" value="male">
+        Male</mat-radio-button
+      >
+      <mat-radio-button class="radio-button" value="female">
+        Female</mat-radio-button
+      >
+      <mat-radio-button class="radio-button" value="other">
+        Other</mat-radio-button
+      >
+    </mat-radio-group>
+    <mat-form-field>
+      <input
+        matInput
+        type="password"
+        name="password"
+        placeholder="Password"
+        ngModel
+        required
+        minlength="3"
+        #password="ngModel"
+      />
+      <mat-error *ngIf="password.invalid"
+        ><p>Please Enter the password!</p>
+      </mat-error>
+    </mat-form-field>
+
+    <button
+      mat-raised-button
+      color="accent"
+      type="submit"
+      [disabled]="f.invalid"
+    >
+      Create User
+    </button>
+  </form>
+</mat-card>

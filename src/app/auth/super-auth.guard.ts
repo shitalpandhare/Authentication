@@ -13,8 +13,20 @@ import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
 @Injectable()
-export class SuperAuthGuard implements CanActivate {
+export class SuperAuthGuard implements CanActivate, CanLoad {
   constructor(private authService: AuthService, private router: Router) {}
+
+  canLoad(
+    route: Route,
+    segments: UrlSegment[]
+  ):
+    | boolean
+    | UrlTree
+    | Observable<boolean | UrlTree>
+    | Promise<boolean | UrlTree> {
+    console.log('in canload');
+    return true;
+  }
 
   role = '';
 

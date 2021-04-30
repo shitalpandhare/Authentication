@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 import { User } from './user.model';
 
 export interface AuthResponse {
@@ -25,6 +26,10 @@ export interface AuthResponse {
 export class AuthService {
   private accessToken: string;
   private userRole: string;
+
+  users: User[] = [];
+  updatedUsers = new BehaviorSubject<User[]>(this.users);
+
   constructor(private http: HttpClient, private router: Router) {}
 
   getAccessToken() {
@@ -100,5 +105,25 @@ export class AuthService {
   private clearAuthDate() {
     localStorage.removeItem('token');
     localStorage.removeItem('expiration');
+  }
+
+  //fetch All user
+
+  getAllUsers(role: string) {
+    return this.http
+      .get<{ message: string; users: User[] }>(
+        'http://localhost:3000/api/user/' + role
+      )
+      .subscribe(
+        (res) => {
+          console.log('in getallUsers');
+          console.log(res);
+          this.users = res.users;
+          this.updatedUsers.next(this.users);
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
   }
 }

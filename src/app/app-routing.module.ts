@@ -21,6 +21,7 @@ const routes: Routes = [
   },
   {
     path: 'super',
+    canLoad: [SuperAuthGuard],
     canActivate: [SuperAuthGuard],
     loadChildren: () => import('./super/super.module').then((m) => SuperModule),
   },

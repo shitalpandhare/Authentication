@@ -1,1 +1,9 @@
-<p>super works!</p>
+<nav mat-tab-nav-bar>
+  <a mat-tab-link routerLink="admin-list" routerLinkActive="active">
+    Admin list
+  </a>
+  <a mat-tab-link [routerLink]="['create-admin']" routerLinkActive="active">
+    Create Admin
+  </a>
+</nav>
+<router-outlet></router-outlet>

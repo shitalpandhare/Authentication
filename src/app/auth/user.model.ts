@@ -6,6 +6,6 @@ export class User {
     public address: string,
     public role: string,
     public gender: string,
-    public password: string
+    public password?: string
   ) {}
 }
