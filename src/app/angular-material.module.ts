@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -9,6 +8,10 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import { MatPaginatorModule } from '@angular/material/paginator';
+
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [],
@@ -22,6 +25,9 @@ import { MatTableModule } from '@angular/material/table';
     MatExpansionModule,
     MatTabsModule,
     MatTableModule,
+    MatSortModule,
+    MatPaginatorModule,
+    FontAwesomeModule,
   ],
 })
 export class AngularMaterialModule {}

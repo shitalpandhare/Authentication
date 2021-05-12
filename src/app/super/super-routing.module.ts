@@ -11,6 +11,7 @@ const routes: Routes = [
     children: [
       { path: 'admin-list', component: AdminListComponent },
       { path: 'create-admin', component: CreateAdminComponent },
+      { path: 'update-admin/:id', component: CreateAdminComponent },
       { path: '', redirectTo: 'admin-list', pathMatch: 'full' },
     ],
   },

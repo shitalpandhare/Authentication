@@ -6,7 +6,7 @@
         type="text"
         name="firstname"
         placeholder="First Name"
-        ngModel
+        [(ngModel)]="obj.firstname"
         required
         minlength="3"
         #firstname="ngModel"
@@ -21,7 +21,7 @@
         type="text"
         name="lastname"
         placeholder="Last Name"
-        ngModel
+        [(ngModel)]="obj.lastname"
         required
         minlength="3"
         #lastname="ngModel"
@@ -37,7 +37,7 @@
         type="email"
         name="email"
         placeholder="Email"
-        ngModel
+        [(ngModel)]="obj.email"
         required
         minlength="3"
         #email="ngModel"
@@ -53,7 +53,7 @@
         type="text"
         name="address"
         placeholder="Address"
-        ngModel
+        [(ngModel)]="obj.address"
         required
         minlength="3"
         #address="ngModel"
@@ -63,13 +63,14 @@
       </mat-error>
     </mat-form-field>
 
-    <label id="user-role">Role</label>
+    <label *ngIf="!isUpdateMode" id="user-role">Role</label>
     <mat-radio-group
+      *ngIf="!isUpdateMode"
       aria-labelledby="user-role"
       class="radio-group"
       name="role"
       required
-      ngModel
+      [(ngModel)]="obj.role"
       #role="ngModel"
     >
       <mat-radio-button class="radio-button" value="super">
@@ -89,7 +90,7 @@
       class="radio-group"
       name="gender"
       required
-      ngModel
+      [(ngModel)]="obj.gender"
       #gender="ngModel"
     >
       <mat-radio-button class="radio-button" value="male">
@@ -108,7 +109,7 @@
         type="password"
         name="password"
         placeholder="Password"
-        ngModel
+        [(ngModel)]="obj.password"
         required
         minlength="3"
         #password="ngModel"
@@ -124,7 +125,7 @@
       type="submit"
       [disabled]="f.invalid"
     >
-      Create User
+      {{ isUpdateMode ? "Update Admin" : "Create Admin" }}
     </button>
   </form>
 </mat-card>

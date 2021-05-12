@@ -14,6 +14,7 @@ export class AdminAuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
   role = '';
+  isAuth = false;
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
@@ -22,13 +23,21 @@ export class AdminAuthGuard implements CanActivate {
     | UrlTree
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree> {
-    this.role = this.authService.getUserRole();
-    if (this.role == 'admin' || this.role == 'super') {
-      return true;
-    } else if (!this.role) {
-      this.router.navigate(['/auth/login']);
+    this.authService.isAuthenticated.subscribe((res) => {
+      this.isAuth = res;
+    });
+
+    if (this.isAuth) {
+      this.role = localStorage.getItem('role');
+      if (this.role == 'admin' || this.role == 'super') {
+        return true;
+      } else if (!this.role) {
+        this.router.navigate(['/auth/login']);
+      } else {
+        this.router.navigate([this.role]);
+      }
     } else {
-      this.router.navigate([this.role]);
+      this.router.navigate(['/auth/login']);
     }
   }
 }

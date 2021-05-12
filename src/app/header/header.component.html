@@ -1,16 +1,24 @@
 <mat-toolbar color="primary">
   <div>
-    <span style="margin-right: 10px">Auth</span>
+    <span style="margin-right: 10px">Authentication</span>
   </div>
   <span class="spacer"></span>
   <ul>
     <li>
-      <a mat-button routerLink="auth/login" routerLinkActive="mat-accent"
+      <a
+        mat-button
+        routerLink="auth/login"
+        routerLinkActive="mat-accent"
+        *ngIf="!isLoggedIn"
         >Login</a
       >
     </li>
     <li>
-      <a mat-button routerLink="auth/signup" routerLinkActive="mat-accent"
+      <a
+        mat-button
+        routerLink="auth/signup"
+        routerLinkActive="mat-accent"
+        *ngIf="!isLoggedIn"
         >Signup</a
       >
     </li>
@@ -26,7 +34,7 @@
       <a mat-button routerLink="/user" routerLinkActive="mat-accent">User</a>
     </li>
     <li>
-      <button mat-button>Logout</button>
+      <button mat-button (click)="onLogout()" *ngIf="isLoggedIn">Logout</button>
     </li>
   </ul>
 </mat-toolbar>

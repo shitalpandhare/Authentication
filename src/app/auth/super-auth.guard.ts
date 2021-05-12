@@ -2,33 +2,19 @@ import { Injectable } from '@angular/core';
 import {
   ActivatedRouteSnapshot,
   CanActivate,
-  CanLoad,
-  Route,
   Router,
   RouterStateSnapshot,
-  UrlSegment,
   UrlTree,
 } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
 @Injectable()
-export class SuperAuthGuard implements CanActivate, CanLoad {
+export class SuperAuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
-  canLoad(
-    route: Route,
-    segments: UrlSegment[]
-  ):
-    | boolean
-    | UrlTree
-    | Observable<boolean | UrlTree>
-    | Promise<boolean | UrlTree> {
-    console.log('in canload');
-    return true;
-  }
-
   role = '';
+  isAuth = false;
 
   canActivate(
     route: ActivatedRouteSnapshot,
@@ -39,13 +25,22 @@ export class SuperAuthGuard implements CanActivate, CanLoad {
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree> {
     console.log('in canActivate');
-    this.role = this.authService.getUserRole();
-    if (this.role == 'super') {
-      return true;
-    } else if (!this.role) {
-      this.router.navigate(['/auth/login']);
+
+    this.authService.isAuthenticated.subscribe((res) => {
+      this.isAuth = res;
+    });
+
+    if (this.isAuth) {
+      this.role = localStorage.getItem('role');
+      if (this.role == 'super') {
+        return true;
+      } else if (!this.role) {
+        this.router.navigate(['/auth/login']);
+      } else {
+        this.router.navigate([this.role]);
+      }
     } else {
-      this.router.navigate([this.role]);
+      this.router.navigate(['/auth/login']);
     }
   }
 }

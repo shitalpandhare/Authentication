@@ -2,8 +2,21 @@
   <a mat-tab-link routerLink="admin-list" routerLinkActive="active">
     Admin list
   </a>
-  <a mat-tab-link [routerLink]="['create-admin']" routerLinkActive="active">
+  <a
+    mat-tab-link
+    [routerLink]="['create-admin']"
+    routerLinkActive="active"
+    *ngIf="!isUpdateMode"
+  >
     Create Admin
+  </a>
+  <a
+    mat-tab-link
+    [routerLink]="['update-admin']"
+    routerLinkActive="active"
+    *ngIf="isUpdateMode"
+  >
+    Update Admin
   </a>
 </nav>
 <router-outlet></router-outlet>
