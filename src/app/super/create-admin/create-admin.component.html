@@ -63,9 +63,9 @@
       </mat-error>
     </mat-form-field>
 
-    <label *ngIf="!isUpdateMode" id="user-role">Role</label>
+    <label *ngIf="isUpdateMode" id="user-role">Role</label>
     <mat-radio-group
-      *ngIf="!isUpdateMode"
+      *ngIf="isUpdateMode"
       aria-labelledby="user-role"
       class="radio-group"
       name="role"

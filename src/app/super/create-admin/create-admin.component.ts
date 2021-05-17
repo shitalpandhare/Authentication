@@ -66,6 +66,7 @@ export class CreateAdminComponent implements OnInit {
     //   password: this.form.value.password,
     // };
     if (!this.isUpdateMode) {
+      this.obj.role = 'admin';
       this.authService.signup(this.obj);
     } else {
       this.obj.role = 'admin';

@@ -3,13 +3,13 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/auth/user.model';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatPaginator } from '@angular/material/paginator';
 
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { NgForm } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { debounceTime, map, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-admin-list',
@@ -33,8 +33,8 @@ export class AdminListComponent implements OnInit {
 
   dataSource: MatTableDataSource<User>;
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: false }) sort: MatSort;
   @ViewChild('f') form: NgForm;
   users: User[] = [];
 
@@ -45,56 +45,122 @@ export class AdminListComponent implements OnInit {
   adminPerPage = 3;
   pageSizeOptions = [3, 5, 10, 15];
   currentPage = 1;
-
+  isLoadingResults = true;
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    console.log('in on init');
+    this.authService.getAllUsers(this.adminPerPage, this.currentPage, 'admin');
 
     this.authService.adminCount.subscribe((res) => {
       this.totalAdmins = res;
-      console.log('tottal admin', res);
     });
-    this.authService.getAllUsers(this.adminPerPage, this.currentPage, 'admin');
 
     this.authService.updatedUsers.subscribe((users) => {
+      this.isLoadingResults = false;
       this.users = users;
       this.dataSource = new MatTableDataSource(this.users);
-      // this.dataSource.paginator = this.paginator;
       this.authService.isUpdateModeObservable.next(false);
     });
 
     this.updatedSearchText
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((searchText) => {
+        this.searchText = searchText;
+        this.isLoadingResults = true;
         if (searchText == '') {
+          this.searchText = '';
+          this.paginator.pageIndex = 0;
+          this.currentPage = 1;
+          this.adminPerPage = this.paginator.pageSize;
           this.authService.getAllUsers(
             this.adminPerPage,
             this.currentPage,
             'admin'
           );
         } else {
-          this.authService.searchAdmins(searchText);
+          this.paginator.pageIndex = 0;
+
+          if (this.sort.active == undefined) {
+            this.authService.searchAdmins(
+              searchText,
+              this.paginator.pageIndex + 1,
+              this.paginator.pageSize
+            );
+          } else {
+            this.authService.searchSortAdmins(
+              this.searchText,
+              this.sort.active,
+              this.sort.direction,
+              this.paginator.pageIndex + 1,
+              this.paginator.pageSize
+            );
+          }
         }
       });
   }
 
-  // ngAfterViewInit() {
-  //   console.log('in After veiw');
-  //   this.dataSource.sort = this.sort;
-  // }
-
   applyFilter(filterValue: string) {
     this.updatedSearchText.next(filterValue);
   }
-  applySort(sort: MatSort) {
-    console.log(sort);
-    this.authService.sortAdmins(sort.active, sort.direction);
-  }
 
-  onChangedPage(pageData: PageEvent) {
-    this.currentPage = pageData.pageIndex + 1;
-    this.adminPerPage = pageData.pageSize;
-    this.authService.getAllUsers(this.adminPerPage, this.currentPage, 'admin');
+  ngAfterViewInit() {
+    //
+
+    this.sort.sortChange.subscribe(() => {
+      this.isLoadingResults = true;
+      this.paginator.pageIndex = 0;
+
+      if (this.searchText == '') {
+        this.authService.sortAdmins(
+          this.sort.active,
+          this.sort.direction,
+          this.paginator.pageIndex + 1,
+          this.paginator.pageSize
+        );
+      } else {
+        this.authService.searchSortAdmins(
+          this.searchText,
+          this.sort.active,
+          this.sort.direction,
+          this.paginator.pageIndex + 1,
+          this.paginator.pageSize
+        );
+      }
+    });
+
+    this.paginator.page.subscribe(() => {
+      this.isLoadingResults = true;
+      this.currentPage = this.paginator.pageIndex + 1;
+      this.adminPerPage = this.paginator.pageSize;
+
+      if (this.sort.active == undefined && this.searchText == '') {
+        this.authService.getAllUsers(
+          this.adminPerPage,
+          this.currentPage,
+          'admin'
+        );
+      } else if (this.sort.active != undefined && this.searchText == '') {
+        this.authService.sortAdmins(
+          this.sort.active,
+          this.sort.direction,
+          this.paginator.pageIndex + 1,
+          this.paginator.pageSize
+        );
+      } else if (this.searchText != '' && this.sort.active == undefined) {
+        this.authService.searchAdmins(
+          this.searchText,
+          this.paginator.pageIndex + 1,
+          this.paginator.pageSize
+        );
+      } else if (this.searchText != '' && this.sort.active != undefined) {
+        this.authService.searchSortAdmins(
+          this.searchText,
+          this.sort.active,
+          this.sort.direction,
+          this.paginator.pageIndex + 1,
+          this.paginator.pageSize
+        );
+      }
+    });
   }
 }

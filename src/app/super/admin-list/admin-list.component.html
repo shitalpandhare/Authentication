@@ -1,4 +1,4 @@
-<div class="example-container mat-elevation-z8" *ngIf="users.length > 0">
+<div class="example-container mat-elevation-z8">
   <div class="example-header">
     <mat-form-field>
       <input
@@ -10,15 +10,10 @@
       />
     </mat-form-field>
   </div>
-
-  <table
-    mat-table
-    [dataSource]="dataSource"
-    matSort
-    matSortDirection="desc"
-    (matSortChange)="applySort($event)"
-    class="mat-elevation-z8"
-  >
+  <div>
+    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+  </div>
+  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
     <!--- Note that these columns can be defined in any order.
         The actual rendered columns are set as a property on the row definition" -->
 
@@ -70,10 +65,9 @@
   </table>
   <mat-paginator
     [length]="totalAdmins"
-    [pageSize]="adminPerPage"
+    [pageSize]="3"
     [pageSizeOptions]="pageSizeOptions"
     showFirstLastButtons
-    (page)="onChangedPage($event)"
   ></mat-paginator>
 </div>
 

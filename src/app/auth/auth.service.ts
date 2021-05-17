@@ -70,7 +70,6 @@ export class AuthService implements OnInit {
           } else {
             this.router.navigate(['/auth/login']);
           }
-
           console.log(res);
         },
         (error) => {
@@ -196,10 +195,11 @@ export class AuthService implements OnInit {
 
       if (res) {
         console.log('getUser');
+
         this.users = res.users;
         this.updatedUsers.next(this.users);
-        console.log(res);
         this.adminCount.next(res.maxAdmins);
+        console.log(res);
       }
     } catch (err) {
       console.log(err);
@@ -226,19 +226,24 @@ export class AuthService implements OnInit {
       );
   }
 
-  async searchAdmins(searchText: string) {
+  async searchAdmins(searchText: string, pageIndex: number, pageSize: number) {
     try {
+      let queryParams = `?pageSize=${pageSize}&page=${pageIndex}`;
       let res = await this.http
-        .get<{ message: string; users: User[] }>(
-          'http://localhost:3000/api/user/admin/search/' + searchText
+        .get<{ message: string; users: User[]; maxSearchedAdmin: number }>(
+          'http://localhost:3000/api/user/admin/search/' +
+            searchText +
+            queryParams
         )
         .toPromise();
 
       if (res) {
         this.users = res.users;
+        this.adminCount.next(res.maxSearchedAdmin);
         this.updatedUsers.next(this.users);
       } else {
         this.users = [];
+        this.adminCount.next(0);
         this.updatedUsers.next(this.users);
       }
     } catch (err) {
@@ -248,21 +253,70 @@ export class AuthService implements OnInit {
     }
   }
 
-  async sortAdmins(active: string, direction: string) {
+  sortAdmins(
+    active: string,
+    direction: string,
+    pageIndex: number,
+    pageSize: number
+  ) {
+    console.log('in sort');
+
     try {
-      let res = await this.http
-        .post<{ message: string; users: User[] }>(
+      return this.http
+        .post<{ message: string; users: User[]; maxAdmins: number }>(
           'http://localhost:3000/api/user/admin/sort',
-          { active: active, direction: direction }
+          {
+            active: active,
+            direction: direction,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+          }
+        )
+        .subscribe((res) => {
+          this.users = res.users;
+          this.adminCount.next(res.maxAdmins);
+          this.updatedUsers.next(this.users);
+        });
+    } catch (err) {
+      // if (res) {
+      //   console.log('in sort');
+      //   this.users = res.users;
+      //   console.log(this.users);
+      //   this.updatedUsers.next(this.users);
+      // }
+      console.log(err);
+    }
+  }
+
+  async searchSortAdmins(
+    searchText: string,
+    active: string,
+    direction: string,
+    pageIndex: number,
+    pageSize: number
+  ) {
+    try {
+      let queryParams = `?active=${active}&direction=${direction}&pageSize=${pageSize}&page=${pageIndex}`;
+      let res = await this.http
+        .get<{ message: string; users: User[]; maxSearchedAdmin: number }>(
+          'http://localhost:3000/api/user/admin/searchsort/' +
+            searchText +
+            queryParams
         )
         .toPromise();
 
       if (res) {
-        console.log('in sort');
         this.users = res.users;
+        this.adminCount.next(res.maxSearchedAdmin);
+        this.updatedUsers.next(this.users);
+      } else {
+        this.users = [];
+        this.adminCount.next(0);
         this.updatedUsers.next(this.users);
       }
     } catch (err) {
+      console.log('in catch');
+
       console.log(err);
     }
   }
